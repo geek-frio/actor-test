@@ -44,6 +44,12 @@ impl Handler<SubcribeMsg> for MessageSubscriber {
     }
 }
 
+impl Handler<SchedFailWarnMsg> for MessageSubscriber {
+    type Result = ();
+
+    fn handle(&mut self, msg: SchedFailWarnMsg, ctx: &mut Self::Context) -> Self::Result {}
+}
+
 impl Actor for SmsReceiver {
     type Context = Context<Self>;
     fn started(&mut self, ctx: &mut Self::Context) {
@@ -80,7 +86,10 @@ fn main() {
     let sms_rec = SmsReceiver {}.start().recipient();
     let dd_rec = DingDingReceiver {}.start().recipient();
 
-    let subscriber = MessageSubscriber::new().start();
+    let sm_rec = SubcribeMsg(sms_rec);
+    let dd_red = SubcribeMsg(dd_rec);
 
-    subscriber.do_send(msg)
+    let subscriber = MessageSubscriber::new().start();
+    subscriber.do_send(sm_rec);
+    subscriber.do_send(dd_red);
 }
