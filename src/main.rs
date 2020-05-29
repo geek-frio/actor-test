@@ -8,7 +8,7 @@ struct SchedFailWarnMsg {
     description: Option<String>,
     receiver_dd_id: Option<String>,
     receiver_mail: String,
-    error_time: DateTime<Utc>,
+    error_time: DateTime<Local>,
 }
 
 #[derive(Message, Debug)]
@@ -92,4 +92,13 @@ fn main() {
     let subscriber = MessageSubscriber::new().start();
     subscriber.do_send(sm_rec);
     subscriber.do_send(dd_red);
+
+    let sch_msg = SchedFailWarnMsg {
+        name: "test".to_string(),
+        description: Some("description".to_string()),
+        receiver_dd_id: Some("receiver_dd_id".to_string()),
+        receiver_mail: "receiver mail".to_string(),
+        error_time: Local::now(),
+    };
+    subscriber.do_send(sch_msg);
 }
