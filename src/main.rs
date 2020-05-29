@@ -16,7 +16,13 @@ struct SchedFailWarnMsg {
 struct SubcribeMsg(Recipient<SchedFailWarnMsg>);
 
 struct MessageSubscriber {
-    revs: Vec<Recipient<SchedFailWarnMsg>>,
+    recvs: Vec<Recipient<SchedFailWarnMsg>>,
+}
+
+impl MessageSubscriber {
+    fn new() -> MessageSubscriber {
+        MessageSubscriber { recvs: vec![] }
+    }
 }
 
 impl Actor for MessageSubscriber {
@@ -34,7 +40,7 @@ impl Handler<SubcribeMsg> for MessageSubscriber {
     type Result = ();
 
     fn handle(&mut self, msg: SubcribeMsg, ctx: &mut Self::Context) -> Self::Result {
-        self.revs.push(msg.0);
+        self.recvs.push(msg.0);
     }
 }
 
@@ -69,4 +75,12 @@ impl Handler<SchedFailWarnMsg> for DingDingReceiver {
 }
 struct DingDingReceiver;
 
-fn main() {}
+fn main() {
+    let system = System::new("events");
+    let sms_rec = SmsReceiver {}.start().recipient();
+    let dd_rec = DingDingReceiver {}.start().recipient();
+
+    let subscriber = MessageSubscriber::new().start();
+
+    subscriber.do_send(msg)
+}
