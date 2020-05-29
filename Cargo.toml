@@ -1,0 +1,12 @@
+[package]
+name = "actor_test"
+version = "0.1.0"
+authors = ["GuangZe <haofu@91jkys.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix = "0.10.0-alpha.3"
+actix-rt = "1.1" # <-- Runtime for actix
+chrono = "0.4"
